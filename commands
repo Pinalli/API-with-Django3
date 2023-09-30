@@ -5,3 +5,10 @@ pip install django
 
 folder
 django-admin startproject setup .
+
+pip freeze > requirements.txt
+
+pip install djangorestframework
+pip install markdown
+
+python manage.py createsuperuser

@@ -1,8 +1,8 @@
 from django.db import models
 
 class Student(models.Model):
-    name = models.CharField(max_length=255)
-    cpf = models.CharField(max_length=11)
+    name = models.CharField(blank=False,max_length=255)
+    cpf = models.CharField(blank=False,max_length=11)
     birthday = models.DateField()
 
     def __str__(self):
