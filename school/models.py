@@ -4,7 +4,9 @@ class Student(models.Model):
     name = models.CharField(blank=False,max_length=255)
     cpf = models.CharField(blank=False,max_length=11)
     birthday = models.DateField()
-
+    email = models.EmailField(max_length=255,null=True, blank=True) #new field
+    active = models.BooleanField(null=True, blank=True) #new field , add null=True, blank=True for existing data
+      
     def __str__(self):
         return self.name
     

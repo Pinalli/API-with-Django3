@@ -1,34 +1,25 @@
 from rest_framework import serializers
 from school.models import Course, Student, Registration
+from school.validators import validate_cpf, validate_name, validate_birthday, validate_email   
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['id', 'name', 'cpf', 'birthday']
-    def validate_cpf(self, cpf):
-            if len(cpf) != 11:
-                raise serializers.ValidationError("The CPF need to have 11 digits")
-            if(not cpf.isnumeric()):
-                raise serializers.ValidationError("The CPF need to have only numbers")
-            if(Student.objects.filter(cpf=cpf).exists()):
-                raise serializers.ValidationError("This CPF already exists")
-            return cpf
-    def validate_name(self, name):
-            if len(name) < 5:
-                raise serializers.ValidationError("The name need to have more than 5 characters")
-            if(name.isnumeric()):
-                raise serializers.ValidationError("The name need to have only letters")
-            if(Student.objects.filter(name=name).exists()):
-                raise serializers.ValidationError("This name already exists")
-            return name
-    def validate_birthday(self, birthday):
-        if(birthday.year < 1900):
-            raise serializers.ValidationError("The year of birthday need to be greater than 1900")
-        if(birthday.year > 2005):
-            raise serializers.ValidationError("The year of birthday need to be less than 2005, the student need to be older than 16 years old")
-        return birthday
-      
+        fields = ['id', 'name', 'cpf', 'birthday', 'email', 'active'] 
 
+    def validate(self, data):
+        if not validate_cpf(data['cpf']):
+            raise serializers.ValidationError({'cpf':"This CPF need to have 11 digits"})           
+        if not validate_name(data['name']):
+            raise serializers.ValidationError({'name':"The name need to have more than 5 characters"})       
+        if not validate_birthday(data['birthday']):
+            raise serializers.ValidationError({'birthday':"The year of birthday need to be greater than 1900"})
+        if not validate_email(data['email']):
+            raise serializers.ValidationError({'email':"The email need to have @ and ."})
+        if not data['active']:
+            data['active'] = False
+        return data
+    
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model =  Course
